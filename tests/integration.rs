@@ -105,6 +105,7 @@ fn badge_validator_accepts_a_real_badge_and_rejects_tampering() {
     c.source_hash = "zz".repeat(32);
     let e = verify_badge(&c.badge_json()).expect_err("bad hash must fail");
     assert!(matches!(e, BadgeError::BadSourceHash { .. }));
+    assert!(e.to_string().contains("64 lowercase hex"));
 
     // Wrong length.
     c.source_hash = "ab".repeat(31);
@@ -113,10 +114,8 @@ fn badge_validator_accepts_a_real_badge_and_rejects_tampering() {
     // Empty toolchain.
     c.source_hash = source_hash(LEAN_SRC);
     c.lean_toolchain = String::new();
-    assert!(matches!(
-        verify_badge(&c.badge_json()),
-        Err(BadgeError::EmptyToolchain)
-    ));
+    let e = verify_badge(&c.badge_json()).expect_err("empty toolchain must fail");
+    assert!(e.to_string().contains("no toolchain"));
 
     // Truncated JSON.
     assert!(matches!(
@@ -129,6 +128,38 @@ fn badge_validator_accepts_a_real_badge_and_rejects_tampering() {
     c.kernel_result = docs_proof::KernelResult::Verified;
     let badge = c.badge_json();
     assert!(verify_badge(&badge).is_ok());
+}
+
+#[test]
+fn badge_error_display_covers_every_variant() {
+    let cases: Vec<(BadgeError, &str)> = vec![
+        (BadgeError::Malformed("boom".into()), "malformed badge"),
+        (
+            BadgeError::Version {
+                found: 9,
+                supported: 1,
+            },
+            "unsupported",
+        ),
+        (
+            BadgeError::BadSourceHash { found: "zz".into() },
+            "64 lowercase hex",
+        ),
+        (BadgeError::EmptyToolchain, "no toolchain"),
+        (
+            BadgeError::NotVerified {
+                theorem: "t".into(),
+            },
+            "does not record kernel verification",
+        ),
+    ];
+    for (error, needle) in cases {
+        assert!(
+            error.to_string().contains(needle),
+            "display `{}` missing `{needle}`",
+            error
+        );
+    }
 }
 
 #[test]

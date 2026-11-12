@@ -30,8 +30,10 @@ docs-core extension program (`docs-core/SPEC.md` REQ-P).
 ## Scope (0.1, honest)
 
 Out: creating certificates (the compiler's job, after a real kernel
-run), the client-side wasm re-checker (REQ-P4: future phase, recorded
-here as absent by decision), and Lean-typed frontmatter schemas
+run), the packaged wasm checker bundle (REQ-P4: the *core* has landed -
+`verify_badge` plus a wasm32-clean build, CI-enforced, measuring 4 KB
+raw cdylib against the 80 KB budget - while the packaging and JS glue
+remain future work), and Lean-typed frontmatter schemas
 (REQ-P5: Rust-first; see SPEC).
 
 ## Layer
