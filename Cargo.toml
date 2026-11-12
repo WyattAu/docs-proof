@@ -1,6 +1,6 @@
 [package]
 name = "docs-proof"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.85"
 authors = ["Wyatt Au <wyatt_au@protonmail.com>"]
@@ -29,6 +29,16 @@ thiserror = "2"
 
 [dev-dependencies]
 serde_json = "1"
+# The wasm ABI oracle (tests/wasm_abi.rs) drives the committed
+# docs_proof.wasm through the glue's exact call sequence. Same trimmed
+# stack as docs-witness (RUSTSEC-2025-0118: >=36.0.3, no profiling, no
+# threads; no wasi - the checker module imports nothing). Dev-only: the
+# runtime crate never ships to consumers.
+wasmtime = { version = "36.0.3", default-features = false, features = [
+  "cranelift",
+  "runtime",
+  "std",
+] }
 
 [lints.rust]
 missing_docs = "deny"
@@ -44,6 +54,14 @@ indexing_slicing = "deny"
 undocumented_unsafe_blocks = "deny"
 
 [profile.release]
-lto = "thin"
+lto = "fat"
 codegen-units = 1
 strip = true
+# Browser-artifact sizing (REQ-P4 budget): opt-z + abort-on-panic shape
+# the cdylib this crate builds directly (scripts/build-wasm.sh). Library
+# consumers' own profiles always override these for the native dep, so
+# nothing downstream changes behavior. The wasm module has no unwinding
+# machinery to ship, and a checker that cannot validate fails the badge
+# loudly instead of half-answering.
+opt-level = "z"
+panic = "abort"

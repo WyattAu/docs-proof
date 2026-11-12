@@ -13,10 +13,38 @@ concurrency:
 
 jobs:
   quality:
-    uses: WyattAu/engineering-standards/.github/workflows/rust-kit.yml@024f2b5fc013a77316077cea58c9820d1bbfdd28 # main @ 2026-10-03
+    uses: WyattAu/engineering-standards/.github/workflows/rust-kit.yml@4883fca0ea86 # main @ 2026-11-12
     with:
       tier: b            # ≥80% line coverage; record, verify, drift, and badge suites
       all-features: true
       loom: false        # n/a — no lock-free shared-memory primitives (recorded)
-      wasm: true         # REQ-P4 feasibility: the checker core compiles for the browser target (measured 4 KB raw cdylib, against the 80 KB budget)
-      miri: false        # n/a — no unsafe blocks, no FFI
+      wasm: true         # REQ-P4: the crate (checker core + ABI) compiles for the browser target
+      miri: false        # n/a — unsafe confined to the wasm32-only ABI module (documented)
+
+  checker-bundle:
+    # REQ-P4 packaging oracle: build the browser cdylib, hold it to the
+    # 80 KB budget, prove the committed asset is fresh, then drive it
+    # through the JS glue's exact call sequence with wasmtime.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1 # v2.8.1
+      - name: build the checker bundle
+        run: bash scripts/build-wasm.sh assets/docs-proof.wasm
+      - name: budget gate (80 KB raw)
+        run: |
+          bytes=$(wc -c < assets/docs-proof.wasm)
+          echo "checker bundle: $bytes bytes"
+          test "$bytes" -lt 81920
+      - name: committed asset is fresh
+        run: git diff --exit-code assets/docs-proof.wasm
+      - name: browser-artifact oracle
+        run: cargo test --locked --test wasm_abi
+        env:
+          DOCS_PROOF_WASM: ${{ github.workspace }}/assets/docs-proof.wasm

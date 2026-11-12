@@ -23,28 +23,53 @@
 //! # Scope (0.1, honest)
 //!
 //! In: the record, SHA-256 source hashing, serde round-trip for static
-//! embedding, verification against current source + toolchain, and
-//! structural badge validation (`verify_badge`) so a page (or the wasm
-//! client bundle this crate compiles into) can reject a malformed or
-//! stale-versioned badge before trusting it.
+//! embedding, verification against current source + toolchain, structural
+//! badge validation (`verify_badge`) for pages and the wasm client bundle,
+//! and the browser ABI + JS glue (`CHECKER_JS`, `assets/docs-proof.wasm`).
 //! Out: creating certificates (that is the compiler's, after a real
-//! kernel run - this crate never claims verification by itself), the
-//! packaged wasm checker bundle itself (REQ-P4: the crate is
-//! wasm32-proven in CI and the badge validator is the checker's core;
-//! packaging remains a future phase), and Lean-typed frontmatter schemas
+//! kernel run - this crate never claims verification by itself), running
+//! Lean (REQ-P1: never linked), and Lean-typed frontmatter schemas
 //! (REQ-P5: Rust-first).
 
 #![deny(missing_docs)]
-#![forbid(unsafe_code)]
+// `unsafe` is forbidden everywhere except src/wasm.rs, the wasm32-only
+// C ABI where raw pointers cross the browser boundary; that module
+// re-allows it locally and documents every use.
+#![deny(unsafe_code)]
 
 mod certificate;
 mod error;
+
+#[cfg(target_arch = "wasm32")]
+mod wasm;
 
 pub use certificate::{
     source_hash, verify, verify_badge, CertificateBuilder, KernelResult, ProofCertificate,
     CERTIFICATE_VERSION,
 };
 pub use error::{BadgeError, VerifyError};
+
+/// Browser ABI status: badge parsed, validated, kernel-verified.
+pub const DPS_OK: u32 = 0;
+/// Browser ABI status: input was not valid JSON or off the record shape.
+pub const DPS_MALFORMED: u32 = 1;
+/// Browser ABI status: certificate format newer than this checker.
+pub const DPS_UNSUPPORTED_VERSION: u32 = 2;
+/// Browser ABI status: source hash is not 64 lowercase hex characters.
+pub const DPS_BAD_SOURCE_HASH: u32 = 3;
+/// Browser ABI status: badge records no toolchain.
+pub const DPS_EMPTY_TOOLCHAIN: u32 = 4;
+/// Browser ABI status: badge does not record kernel verification.
+pub const DPS_NOT_VERIFIED: u32 = 5;
+/// Browser ABI status: input bytes were not valid UTF-8.
+pub const DPS_BAD_UTF8: u32 = 6;
+
+/// The checker's JS glue, as shipped in `assets/docs-proof.js`. Native
+/// hosts embed it next to the wasm module; the module itself is a build
+/// artifact (`cargo build --release --target wasm32-unknown-unknown`,
+/// or the committed `assets/docs-proof.wasm`, which CI keeps fresh and
+/// under the 80 KB budget).
+pub const CHECKER_JS: &str = include_str!("../assets/docs-proof.js");
 
 /// The crate's version, for callers that report it.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

@@ -36,6 +36,29 @@ raw cdylib against the 80 KB budget - while the packaging and JS glue
 remain future work), and Lean-typed frontmatter schemas
 (REQ-P5: Rust-first; see SPEC).
 
+
+## Browser checker bundle (REQ-P4 packaging)
+
+The crate compiles into a hand-rolled-C-ABI wasm module plus a
+dependency-free ES module glue (`CHECKER_JS`, shipped in
+`assets/docs-proof.js`):
+
+```text
+assets/docs-proof.wasm  63.6 KB raw against the 80 KB budget (CI gate)
+assets/docs-proof.js    loadChecker() -> verifyBadge(json) -> verdict
+```
+
+The wasm half is the authority on structure, version, hash shape,
+toolchain presence, and the kernel result; the glue only re-reads
+display fields from the page's own JSON after the wasm check accepts.
+Status codes are the crate-root `DPS_*` constants. Build the module with
+`bash scripts/build-wasm.sh` (cargo rustc --crate-type cdylib); CI
+rebuilds it, holds it to the budget, diffs it against the committed
+asset, and drives it through the glue's exact call sequence with
+wasmtime (`tests/wasm_abi.rs`). The error slot carries short static
+messages: formatting machinery would cost tens of KB, and the page
+already holds the JSON the diagnostics would quote.
+
 ## Layer
 
 L0 - leaf. Zero estate-internal dependencies and zero Lean linkage;

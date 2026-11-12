@@ -4,17 +4,105 @@
 [cargo-vet]
 version = "0.10"
 
+[[exemptions.addr2line]]
+version = "0.25.1"
+criteria = "safe-to-run"
+
+[[exemptions.allocator-api2]]
+version = "0.2.21"
+criteria = "safe-to-run"
+
+[[exemptions.anyhow]]
+version = "1.0.104"
+criteria = "safe-to-run"
+
+[[exemptions.arbitrary]]
+version = "1.5.0"
+criteria = "safe-to-run"
+
+[[exemptions.bitflags]]
+version = "2.13.2"
+criteria = "safe-to-run"
+
 [[exemptions.block-buffer]]
 version = "0.10.4"
 criteria = "safe-to-deploy"
+
+[[exemptions.bumpalo]]
+version = "3.20.3"
+criteria = "safe-to-run"
+
+[[exemptions.cc]]
+version = "1.11.1"
+criteria = "safe-to-run"
 
 [[exemptions.cfg-if]]
 version = "1.0.5"
 criteria = "safe-to-deploy"
 
+[[exemptions.cobs]]
+version = "0.3.0"
+criteria = "safe-to-run"
+
 [[exemptions.cpufeatures]]
 version = "0.2.17"
 criteria = "safe-to-deploy"
+
+[[exemptions.cranelift-assembler-x64]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-assembler-x64-meta]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-bforest]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-bitset]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-codegen]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-codegen-meta]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-codegen-shared]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-control]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-entity]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-frontend]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-isle]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-native]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.cranelift-srcgen]]
+version = "0.123.20"
+criteria = "safe-to-run"
+
+[[exemptions.crc32fast]]
+version = "1.5.5"
+criteria = "safe-to-run"
 
 [[exemptions.crypto-common]]
 version = "0.1.7"
@@ -24,29 +112,145 @@ criteria = "safe-to-deploy"
 version = "0.10.7"
 criteria = "safe-to-deploy"
 
+[[exemptions.either]]
+version = "1.19.0"
+criteria = "safe-to-run"
+
+[[exemptions.embedded-io]]
+version = "0.4.0"
+criteria = "safe-to-run"
+
+[[exemptions.embedded-io]]
+version = "0.6.1"
+criteria = "safe-to-run"
+
+[[exemptions.equivalent]]
+version = "1.0.3"
+criteria = "safe-to-run"
+
+[[exemptions.errno]]
+version = "0.3.15"
+criteria = "safe-to-run"
+
+[[exemptions.fallible-iterator]]
+version = "0.3.0"
+criteria = "safe-to-run"
+
+[[exemptions.find-msvc-tools]]
+version = "0.1.15"
+criteria = "safe-to-run"
+
+[[exemptions.foldhash]]
+version = "0.1.5"
+criteria = "safe-to-run"
+
 [[exemptions.generic-array]]
 version = "0.14.7"
 criteria = "safe-to-deploy"
+
+[[exemptions.gimli]]
+version = "0.32.3"
+criteria = "safe-to-run"
+
+[[exemptions.hashbrown]]
+version = "0.15.5"
+criteria = "safe-to-run"
+
+[[exemptions.hashbrown]]
+version = "0.17.1"
+criteria = "safe-to-run"
+
+[[exemptions.heck]]
+version = "0.5.0"
+criteria = "safe-to-run"
+
+[[exemptions.indexmap]]
+version = "2.14.2"
+criteria = "safe-to-run"
+
+[[exemptions.itertools]]
+version = "0.14.0"
+criteria = "safe-to-run"
 
 [[exemptions.itoa]]
 version = "1.0.19"
 criteria = "safe-to-deploy"
 
+[[exemptions.leb128fmt]]
+version = "0.1.0"
+criteria = "safe-to-run"
+
 [[exemptions.libc]]
 version = "0.2.191"
 criteria = "safe-to-deploy"
+
+[[exemptions.libm]]
+version = "0.2.16"
+criteria = "safe-to-run"
+
+[[exemptions.linux-raw-sys]]
+version = "0.12.1"
+criteria = "safe-to-run"
+
+[[exemptions.log]]
+version = "0.4.35"
+criteria = "safe-to-run"
+
+[[exemptions.mach2]]
+version = "0.4.3"
+criteria = "safe-to-run"
 
 [[exemptions.memchr]]
 version = "2.8.3"
 criteria = "safe-to-deploy"
 
+[[exemptions.memfd]]
+version = "0.6.6"
+criteria = "safe-to-run"
+
+[[exemptions.object]]
+version = "0.37.3"
+criteria = "safe-to-run"
+
+[[exemptions.once_cell]]
+version = "1.21.4"
+criteria = "safe-to-run"
+
+[[exemptions.postcard]]
+version = "1.1.3"
+criteria = "safe-to-run"
+
 [[exemptions.proc-macro2]]
 version = "1.0.107"
 criteria = "safe-to-deploy"
 
+[[exemptions.pulley-interpreter]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.pulley-macros]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
 [[exemptions.quote]]
 version = "1.0.47"
 criteria = "safe-to-deploy"
+
+[[exemptions.regalloc2]]
+version = "0.12.2"
+criteria = "safe-to-run"
+
+[[exemptions.rustc-hash]]
+version = "2.1.3"
+criteria = "safe-to-run"
+
+[[exemptions.rustix]]
+version = "1.1.6"
+criteria = "safe-to-run"
+
+[[exemptions.semver]]
+version = "1.0.28"
+criteria = "safe-to-run"
 
 [[exemptions.serde]]
 version = "1.0.229"
@@ -68,9 +272,33 @@ criteria = "safe-to-deploy"
 version = "0.10.9"
 criteria = "safe-to-deploy"
 
+[[exemptions.shlex]]
+version = "2.0.1"
+criteria = "safe-to-run"
+
+[[exemptions.smallvec]]
+version = "1.16.5"
+criteria = "safe-to-run"
+
+[[exemptions.stable_deref_trait]]
+version = "1.2.1"
+criteria = "safe-to-run"
+
+[[exemptions.syn]]
+version = "2.0.119"
+criteria = "safe-to-run"
+
 [[exemptions.syn]]
 version = "3.0.10"
 criteria = "safe-to-deploy"
+
+[[exemptions.target-lexicon]]
+version = "0.13.5"
+criteria = "safe-to-run"
+
+[[exemptions.termcolor]]
+version = "1.4.1"
+criteria = "safe-to-run"
 
 [[exemptions.thiserror]]
 version = "2.0.21"
@@ -91,6 +319,114 @@ criteria = "safe-to-deploy"
 [[exemptions.version_check]]
 version = "0.9.5"
 criteria = "safe-to-deploy"
+
+[[exemptions.wasm-encoder]]
+version = "0.236.1"
+criteria = "safe-to-run"
+
+[[exemptions.wasmparser]]
+version = "0.236.1"
+criteria = "safe-to-run"
+
+[[exemptions.wasmprinter]]
+version = "0.236.1"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-environ]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-asm-macros]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-cranelift]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-fiber]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-jit-debug]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-jit-icache-coherence]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-math]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-slab]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-unwinder]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.wasmtime-internal-versioned-export-macros]]
+version = "36.0.20"
+criteria = "safe-to-run"
+
+[[exemptions.winapi-util]]
+version = "0.1.11"
+criteria = "safe-to-run"
+
+[[exemptions.windows-link]]
+version = "0.2.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows-sys]]
+version = "0.60.2"
+criteria = "safe-to-run"
+
+[[exemptions.windows-sys]]
+version = "0.61.2"
+criteria = "safe-to-run"
+
+[[exemptions.windows-targets]]
+version = "0.53.5"
+criteria = "safe-to-run"
+
+[[exemptions.windows_aarch64_gnullvm]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_aarch64_msvc]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_i686_gnu]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_i686_gnullvm]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_i686_msvc]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_gnu]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_gnullvm]]
+version = "0.53.1"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_msvc]]
+version = "0.53.1"
+criteria = "safe-to-run"
 
 [[exemptions.zmij]]
 version = "1.0.23"
