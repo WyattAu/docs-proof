@@ -1,6 +1,6 @@
 [package]
 name = "docs-proof"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.85"
 authors = ["Wyatt Au <wyatt_au@protonmail.com>"]
@@ -23,6 +23,7 @@ tier = "L0"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 sha2 = "0.10"
 thiserror = "2"
 

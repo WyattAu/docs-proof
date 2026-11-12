@@ -66,3 +66,57 @@ impl std::fmt::Display for VerifyError {
 }
 
 impl std::error::Error for VerifyError {}
+
+/// Why a badge failed structural validation (the client-side checker's
+/// error type; REQ-P4).
+#[derive(Debug)]
+#[non_exhaustive]
+pub enum BadgeError {
+    /// The badge is not valid JSON or does not match the record shape.
+    Malformed(String),
+    /// The record format is newer than this checker understands.
+    Version {
+        /// Version found in the badge.
+        found: u32,
+        /// Highest version this checker validates.
+        supported: u32,
+    },
+    /// The source hash is not 64 lowercase hex characters.
+    BadSourceHash {
+        /// The hash string as found.
+        found: String,
+    },
+    /// The badge names no toolchain, so provenance is unverifiable.
+    EmptyToolchain,
+    /// The badge does not record kernel verification.
+    NotVerified {
+        /// The theorem the badge names.
+        theorem: String,
+    },
+}
+
+impl std::fmt::Display for BadgeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Malformed(e) => write!(f, "malformed badge: {e}"),
+            Self::Version { found, supported } => {
+                write!(
+                    f,
+                    "badge version {found} unsupported; this checker validates up to {supported}"
+                )
+            }
+            Self::BadSourceHash { found } => {
+                write!(f, "badge source hash is not 64 lowercase hex: {found}")
+            }
+            Self::EmptyToolchain => write!(f, "badge records no toolchain"),
+            Self::NotVerified { theorem } => {
+                write!(
+                    f,
+                    "badge for `{theorem}` does not record kernel verification"
+                )
+            }
+        }
+    }
+}
+
+impl std::error::Error for BadgeError {}

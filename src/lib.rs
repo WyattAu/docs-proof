@@ -23,11 +23,16 @@
 //! # Scope (0.1, honest)
 //!
 //! In: the record, SHA-256 source hashing, serde round-trip for static
-//! embedding, verification against current source + toolchain.
+//! embedding, verification against current source + toolchain, and
+//! structural badge validation (`verify_badge`) so a page (or the wasm
+//! client bundle this crate compiles into) can reject a malformed or
+//! stale-versioned badge before trusting it.
 //! Out: creating certificates (that is the compiler's, after a real
-//! kernel run — this crate never claims verification by itself), the
-//! tiny client-side wasm re-checker (REQ-P4: future phase, recorded),
-//! and Lean-typed frontmatter schemas (REQ-P5: Rust-first).
+//! kernel run - this crate never claims verification by itself), the
+//! packaged wasm checker bundle itself (REQ-P4: the crate is
+//! wasm32-proven in CI and the badge validator is the checker's core;
+//! packaging remains a future phase), and Lean-typed frontmatter schemas
+//! (REQ-P5: Rust-first).
 
 #![deny(missing_docs)]
 #![forbid(unsafe_code)]
@@ -36,9 +41,10 @@ mod certificate;
 mod error;
 
 pub use certificate::{
-    source_hash, verify, CertificateBuilder, KernelResult, ProofCertificate, CERTIFICATE_VERSION,
+    source_hash, verify, verify_badge, CertificateBuilder, KernelResult, ProofCertificate,
+    CERTIFICATE_VERSION,
 };
-pub use error::VerifyError;
+pub use error::{BadgeError, VerifyError};
 
 /// The crate's version, for callers that report it.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

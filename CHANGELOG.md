@@ -19,3 +19,19 @@ All notable changes to this project are documented in this file.
 - Tests: record shape, verify pass/fail on both drift axes, badge
   escaping vs serde, round-trip, future-version rejection, byte-exact
   hashing.
+
+## [0.1.1] - 2026-11-12
+
+### Added
+
+- `verify_badge` + `BadgeError`: structural validation of badge JSON as
+  it arrives on a page (version, 64-lowercase-hex source hash, non-empty
+  toolchain, verified kernel result) - the client-side checker's core
+  (REQ-P4). The crate is wasm32-clean; the packaged wasm checker bundle
+  remains future work (recorded in SPEC REQ-P4).
+
+### Changed
+
+- `serde_json` moved from dev-dependency to dependency: badges arrive as
+  JSON and the client checker parses them. `badge_json` stays hand-rolled
+  with its differential test against serde.

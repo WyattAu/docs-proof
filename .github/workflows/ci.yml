@@ -18,5 +18,5 @@ jobs:
       tier: b            # ≥80% line coverage; record, verify, drift, and badge suites
       all-features: true
       loom: false        # n/a — no lock-free shared-memory primitives (recorded)
-      wasm: false        # n/a — badge emission is a build-time concern (recorded)
+      wasm: true         # REQ-P4 feasibility: the checker core compiles for the browser target (measured 4 KB raw cdylib, against the 80 KB budget)
       miri: false        # n/a — no unsafe blocks, no FFI

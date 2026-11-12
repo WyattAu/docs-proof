@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-use crate::error::VerifyError;
+use crate::error::{BadgeError, VerifyError};
 
 /// The kernel verdict recorded for one theorem.
 ///
@@ -149,4 +149,41 @@ pub fn verify(
         });
     }
     Ok(())
+}
+
+/// Validate a badge as it arrives on a page: a JSON string that must
+/// parse into a current-version certificate with a well-formed hash,
+/// a non-empty toolchain, and a `verified` kernel result.
+///
+/// This is the client-side checker's core (REQ-P4): structural validity
+/// plus the format contract. It does not claim the proof is real - only
+/// the build-time `verify` against the source can say that.
+pub fn verify_badge(badge_json: &str) -> Result<ProofCertificate, BadgeError> {
+    let cert: ProofCertificate =
+        serde_json::from_str(badge_json).map_err(|e| BadgeError::Malformed(e.to_string()))?;
+    if cert.certificate_version > CERTIFICATE_VERSION {
+        return Err(BadgeError::Version {
+            found: cert.certificate_version,
+            supported: CERTIFICATE_VERSION,
+        });
+    }
+    let hash_ok = cert.source_hash.len() == 64
+        && cert
+            .source_hash
+            .chars()
+            .all(|c| c.is_ascii_digit() || ('a'..='f').contains(&c));
+    if !hash_ok {
+        return Err(BadgeError::BadSourceHash {
+            found: cert.source_hash.clone(),
+        });
+    }
+    if cert.lean_toolchain.is_empty() {
+        return Err(BadgeError::EmptyToolchain);
+    }
+    if cert.kernel_result != KernelResult::Verified {
+        return Err(BadgeError::NotVerified {
+            theorem: cert.theorem.clone(),
+        });
+    }
+    Ok(cert)
 }

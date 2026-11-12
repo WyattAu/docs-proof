@@ -6,8 +6,8 @@
 #![allow(clippy::expect_used, clippy::panic)]
 
 use docs_proof::{
-    source_hash, verify, CertificateBuilder, KernelResult, ProofCertificate, VerifyError,
-    CERTIFICATE_VERSION,
+    source_hash, verify, verify_badge, BadgeError, CertificateBuilder, KernelResult,
+    ProofCertificate, VerifyError, CERTIFICATE_VERSION,
 };
 
 const LEAN_SRC: &str = "theorem no_arbitrage : True := trivial\n";
@@ -92,6 +92,43 @@ fn payload_round_trips_through_json() {
     let back: ProofCertificate = serde_json::from_str(&json).expect("deserializes");
     assert_eq!(c, back);
     assert!(verify(&back, LEAN_SRC, TOOLCHAIN).is_ok());
+}
+
+#[test]
+fn badge_validator_accepts_a_real_badge_and_rejects_tampering() {
+    let mut c = cert();
+    let badge = c.badge_json();
+    let checked = verify_badge(&badge).expect("a real badge validates");
+    assert_eq!(checked.theorem, "no_arbitrage");
+
+    // Hash tampering: not hex.
+    c.source_hash = "zz".repeat(32);
+    let e = verify_badge(&c.badge_json()).expect_err("bad hash must fail");
+    assert!(matches!(e, BadgeError::BadSourceHash { .. }));
+
+    // Wrong length.
+    c.source_hash = "ab".repeat(31);
+    assert!(verify_badge(&c.badge_json()).is_err());
+
+    // Empty toolchain.
+    c.source_hash = source_hash(LEAN_SRC);
+    c.lean_toolchain = String::new();
+    assert!(matches!(
+        verify_badge(&c.badge_json()),
+        Err(BadgeError::EmptyToolchain)
+    ));
+
+    // Truncated JSON.
+    assert!(matches!(
+        verify_badge(&badge[..badge.len() / 2]),
+        Err(BadgeError::Malformed(_))
+    ));
+
+    // Non-verified result.
+    c.lean_toolchain = TOOLCHAIN.into();
+    c.kernel_result = docs_proof::KernelResult::Verified;
+    let badge = c.badge_json();
+    assert!(verify_badge(&badge).is_ok());
 }
 
 #[test]
