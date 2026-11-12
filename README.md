@@ -59,6 +59,16 @@ wasmtime (`tests/wasm_abi.rs`). The error slot carries short static
 messages: formatting machinery would cost tens of KB, and the page
 already holds the JSON the diagnostics would quote.
 
+## Where the truth lives
+
+| Concern | Truth | Path |
+|---|---|---|
+| Record shape, verify, badge validation | source of record | `src/certificate.rs` |
+| Typed failures (`VerifyError`, `BadgeError`) | source of record | `src/error.rs` |
+| Browser ABI + status codes (REQ-P4) | source of record | `src/wasm.rs`, `assets/docs-proof.js` |
+| REQ-P anchors (proof-carrying docs, REQ-P1 no Lean linkage) | SPEC | `docs-core/SPEC.md` |
+| Layer declaration + cdylib budget profile | manifest metadata | `Cargo.toml` |
+
 ## Layer
 
 L0 - leaf. Zero estate-internal dependencies and zero Lean linkage;
