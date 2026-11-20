@@ -34,7 +34,7 @@ serde_json = "1"
 # stack as docs-witness (RUSTSEC-2025-0118: >=36.0.3, no profiling, no
 # threads; no wasi - the checker module imports nothing). Dev-only: the
 # runtime crate never ships to consumers.
-wasmtime = { version = "36.0.3", default-features = false, features = [
+wasmtime = { version = "36.0.4", default-features = false, features = [
   "cranelift",
   "runtime",
   "std",
